@@ -10,7 +10,7 @@ currency_router = APIRouter(
 
 @currency_router.get("/rates", response_model=ShowCurrency, tags=['currency'])
 async def get_currency(from_currency: str, to_currency: str,
-                       value: int = 1) -> ShowCurrency:
+                       value: int = 1) -> dict:
     if len(from_currency) != 3 or len(to_currency) != 3:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -24,7 +24,13 @@ async def get_currency(from_currency: str, to_currency: str,
         )
 
     currencies = from_currency.upper() + to_currency.upper()
-    currency_rate = await _get_currency(currencies)
+    try:
+        currency_rate = await _get_currency(currencies)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Service unavailable please try later.",
+        )
     result = currency_rate * value
     return {
         'result': result

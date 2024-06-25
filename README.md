@@ -17,4 +17,4 @@
 
 
 #### Screenshot:
-![ScreenShot](screenshots/currency.png)
+![ScreenShot](screenshots/currency_converter.png)
